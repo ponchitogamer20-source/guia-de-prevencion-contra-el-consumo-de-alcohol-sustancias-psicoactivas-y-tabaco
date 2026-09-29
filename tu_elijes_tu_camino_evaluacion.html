@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tú eliges tu camino - Evaluación</title>
+<style>
+:root{--primary:#087f8c;--secondary:#0b5f68;--light:#eaf7f8;--dark:#173b40;--ok:#168a45;--bad:#c83c3c;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f2f7f7;color:var(--dark);line-height:1.5}.container{max-width:850px;margin:auto;padding:20px}.card{background:var(--white);border-radius:18px;padding:28px;box-shadow:0 6px 22px rgba(0,0,0,.09);margin:25px 0}.header{text-align:center;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:35px 20px;border-radius:0 0 24px 24px}.header h1{margin:5px 0;font-size:clamp(28px,5vw,42px)}.header h2{margin:8px 0;font-size:20px;font-weight:normal}.header p{margin:8px 0}.hidden{display:none}.question{font-size:21px;font-weight:bold;margin-bottom:18px}.option{display:block;border:2px solid #d5e3e5;border-radius:12px;padding:14px;margin:10px 0;cursor:pointer;transition:.2s;background:#fff}.option:hover{border-color:var(--primary);background:var(--light)}.option input{margin-right:10px;transform:scale(1.2)}button{border:0;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:bold;cursor:pointer;background:var(--primary);color:white;margin:5px}button:hover{filter:brightness(.92)}button.secondary{background:#6b7d80}.nav{display:flex;justify-content:space-between;gap:10px;margin-top:25px}.progress{height:10px;background:#dce9ea;border-radius:20px;overflow:hidden;margin:15px 0 25px}.progress-bar{height:100%;background:var(--primary);width:10%;transition:.3s}.start input{width:100%;padding:14px;border:2px solid #d5e3e5;border-radius:10px;font-size:16px;margin:8px 0 15px}.result{text-align:center}.score{font-size:52px;font-weight:bold;color:var(--primary);margin:10px}.review-item{text-align:left;padding:15px;border-radius:10px;background:#f5f8f8;margin:10px 0}.correct{border-left:5px solid var(--ok)}.incorrect{border-left:5px solid var(--bad)}.small{font-size:14px;color:#617477}.footer{text-align:center;padding:25px;color:#637679;font-size:14px}@media print{button,.start,.nav{display:none!important}.card{box-shadow:none}.header{color:#000;background:#fff;border:2px solid #ddd}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div>Hospital Mario Gaitán Yanguas</div>
+  <h1>TÚ ELIGES TU CAMINO</h1>
+  <h2>Evaluación de prevención</h2>
+  <p>Alcohol · Tabaco · Vapeadores · Sustancias psicoactivas</p>
+</header>
+
+<main class="container">
+<section id="start" class="card start">
+  <h2>¡Bienvenido/a!</h2>
+  <p>Esta evaluación busca reforzar tus conocimientos sobre prevención, factores de protección y redes de apoyo.</p>
+  <label for="name"><strong>Nombre (opcional)</strong></label>
+  <input id="name" type="text" placeholder="Escribe tu nombre">
+  <button onclick="startQuiz()">Comenzar evaluación</button>
+</section>
+
+<section id="quiz" class="card hidden">
+  <div class="small" id="counter"></div>
+  <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+  <div id="questionArea"></div>
+  <div class="nav">
+    <button class="secondary" id="prevBtn" onclick="prevQuestion()">Anterior</button>
+    <button id="nextBtn" onclick="nextQuestion()">Siguiente</button>
+  </div>
+</section>
+
+<section id="result" class="card result hidden"></section>
+</main>
+
+<footer class="footer">Campaña de prevención · Hospital Mario Gaitán Yanguas</footer>
+
+<script>
+const questions=[
+ {q:'¿Cuál es uno de los principales objetivos de la campaña “Tú eliges tu camino”?',o:['Promover el consumo responsable de sustancias.','Informar, prevenir y brindar apoyo para evitar o abandonar el consumo de sustancias.','Recomendar sustancias menos perjudiciales.','Castigar a quienes consumen.'],a:1,e:'La prevención busca informar, reducir riesgos y facilitar el acceso a apoyo.'},
+ {q:'¿Cuál es una estrategia adecuada para prevenir el consumo de sustancias psicoactivas?',o:['Aislarse completamente de otras personas.','Ignorar los problemas personales.','Fortalecer la autoestima, informarse y aprender a decir no ante la presión.','Consumir solamente en ocasiones especiales.'],a:2,e:'Los factores de protección incluyen información, autoestima, habilidades para tomar decisiones y redes de apoyo.'},
+ {q:'¿Qué consecuencias puede tener el consumo problemático de sustancias?',o:['Únicamente cansancio temporal.','Dependencia y problemas físicos, mentales y sociales.','Mejor rendimiento académico.','Ninguna consecuencia si la persona es joven.'],a:1,e:'El consumo problemático puede afectar la salud y diferentes áreas de la vida.'},
+ {q:'Buscar ayuda profesional por un problema relacionado con sustancias es una señal de debilidad.',o:['Verdadero','Falso'],a:1,e:'Pedir ayuda es una decisión de cuidado y puede facilitar el acceso a tratamiento y apoyo.'},
+ {q:'Los vapeadores son completamente inofensivos porque no producen humo tradicional.',o:['Verdadero','Falso'],a:1,e:'Que un producto no produzca humo tradicional no significa que sea inocuo.'},
+ {q:'Camilo ha cambiado su comportamiento, tiene dificultades en sus actividades habituales y sus amigos lo presionan para consumir. ¿Qué sería importante considerar?',o:['Que simplemente debe ocultarlo.','Que puede estar enfrentando factores de riesgo y necesita apoyo.','Que la presión de grupo nunca influye.','Que debe consumir para evitar quedarse solo.'],a:1,e:'Los cambios en el bienestar y la presión de grupo pueden ser señales para fortalecer el apoyo y buscar orientación.'},
+ {q:'¿Cuál sería una forma adecuada de ayudar a Camilo?',o:['Reírse de él para que cambie.','Amenazarlo para que deje de consumir.','Escucharlo sin juzgarlo y animarlo a buscar apoyo profesional.','Ignorar la situación.'],a:2,e:'Escuchar sin juzgar y orientar hacia redes de apoyo favorece la búsqueda de ayuda.'},
+ {q:'¿Cuál de estas opciones representa un proceso saludable para intentar abandonar el consumo?',o:['Reconocer la situación, buscar ayuda y evitar ambientes de riesgo.','Ocultar el problema y continuar igual.','Aislarse de todas las personas.','Cambiar una sustancia por otra sin orientación.'],a:0,e:'Reconocer la situación y buscar apoyo son pasos importantes; también ayuda identificar y reducir situaciones de riesgo.'},
+ {q:'¿Quiénes pueden formar parte de una red de apoyo?',o:['Personas de confianza y profesionales de salud.','Solamente personas desconocidas de internet.','Únicamente quien tenga el mismo problema.','Nadie, porque cada persona debe resolverlo sola.'],a:0,e:'Una red de apoyo puede incluir familiares, personas de confianza, docentes y profesionales de salud.'},
+ {q:'Si alguien te ofrece una sustancia y no quieres consumirla, ¿qué respuesta puede ayudarte a mantener tu decisión?',o:['“No, gracias. Prefiero cuidar mi salud.”','“Solo esta vez porque me están presionando.”','“Tal vez después.”','“Tengo que hacerlo para pertenecer al grupo.”'],a:0,e:'Una respuesta clara y firme puede ayudarte a establecer límites frente a la presión de grupo.'}
+];
+let current=0,answers=[];
+function startQuiz(){document.getElementById('start').classList.add('hidden');document.getElementById('quiz').classList.remove('hidden');showQuestion();}
+function showQuestion(){const x=questions[current];document.getElementById('counter').textContent=`Pregunta ${current+1} de ${questions.length}`;document.getElementById('progressBar').style.width=((current+1)/questions.length*100)+'%';let html=`<div class="question">${x.q}</div>`;x.o.forEach((op,i)=>{html+=`<label class="option"><input type="radio" name="answer" value="${i}" ${answers[current]===i?'checked':''}>${op}</label>`});document.getElementById('questionArea').innerHTML=html;document.getElementById('prevBtn').disabled=current===0;document.getElementById('nextBtn').textContent=current===questions.length-1?'Finalizar':'Siguiente';}
+function saveAnswer(){const selected=document.querySelector('input[name="answer"]:checked');if(selected)answers[current]=Number(selected.value);}
+function nextQuestion(){saveAnswer();if(answers[current]===undefined){alert('Selecciona una respuesta para continuar.');return;}if(current<questions.length-1){current++;showQuestion();}else finish();}
+function prevQuestion(){saveAnswer();if(current>0){current--;showQuestion();}}
+function finish(){const score=answers.reduce((n,a,i)=>n+(a===questions[i].a?1:0),0);const pct=score/questions.length*100;const name=document.getElementById('name').value.trim();let feedback=pct>=80?'¡Excelente! Demostraste una buena comprensión de los conceptos de prevención.':pct>=60?'¡Buen trabajo! Hay algunos conceptos que puedes reforzar.':'Te recomendamos repasar los conceptos de prevención, factores de protección y redes de apoyo.';let html=`<h2>Evaluación finalizada</h2>${name?`<p>Participante: <strong>${escapeHtml(name)}</strong></p>`:''}<div class="score">${score}/10</div><p><strong>${pct}%</strong></p><p>${feedback}</p><hr><h3>Revisión</h3>`;questions.forEach((x,i)=>{const ok=answers[i]===x.a;html+=`<div class="review-item ${ok?'correct':'incorrect'}"><strong>${i+1}. ${ok?'Correcta':'Incorrecta'}</strong><br>${x.e}</div>`});html+=`<p style="margin-top:25px;font-weight:bold">¡Tu salud, tus sueños y tu futuro valen más!</p><p>En el Hospital Mario Gaitán Yanguas pedir ayuda también es una decisión valiente. ¡No estás solo!</p><button onclick="restart()">Realizar nuevamente</button><button onclick="window.print()">Imprimir / Guardar PDF</button>`;document.getElementById('quiz').classList.add('hidden');document.getElementById('result').innerHTML=html;document.getElementById('result').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+function restart(){current=0;answers=[];document.getElementById('result').classList.add('hidden');document.getElementById('start').classList.remove('hidden');}
+function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+</script>
+</body>
+</html>
